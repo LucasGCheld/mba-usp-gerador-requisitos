@@ -151,3 +151,15 @@ html, body {
 .question-item {
     margin-bottom: 15px;
 }
+
+.response-status {
+    font-size: 11px;
+    color: #888;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+    text-align: right;
+}
+.response-status.error {
+    color: #dc3545; /* Vermelho para erros */
+}

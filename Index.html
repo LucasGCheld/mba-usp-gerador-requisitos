@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat de Análise de Requisitos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css"> </head>
+<body>
+    <div id="main-container">
+        <div id="control-panel" class="panel">
+            <h5 class="mb-3">Descreva a Funcionalidade</h5>
+            <div class="form-group">
+                <textarea class="form-control" id="user-input" rows="6" placeholder="Ex: Preciso de uma tela de login com e-mail e senha..."></textarea>
+            </div>
+            <div class="form-check mb-2">
+                <input type="checkbox" class="form-check-input" id="analyze-implicit" checked>
+                <label class="form-check-label" for="analyze-implicit">Analisar requisitos implícitos</label>
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="use-questions">
+                <label class="form-check-label" for="use-questions">Guiar com perguntas detalhadas?</label>
+            </div>
+            <div class="mt-auto">
+                <button class="btn btn-primary w-100" id="send-btn">Gerar Requisitos</button>
+            </div>
+        </div>
+        <div id="questions-panel" class="panel">
+            <h5 class="mb-3">Forneça Contexto (Opcional)</h5>
+            <div id="questions-container"></div>
+        </div>
+        <div id="results-panel" class="panel">
+            <h5 class="mb-3">3. Resultado da Análise Comparativa</h5>
+            <div id="user-prompt-display" class="user-message mb-3" style="display: none;"></div>
+            <div id="llm-results-container">
+                </div>
+            <div class="mt-auto">
+                <button class="btn btn-danger w-100" id="clear-history-btn">Limpar Resultados</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="js/questions.js"></script> <script src="js/script.js"></script>    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

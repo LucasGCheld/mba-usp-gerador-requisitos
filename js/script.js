@@ -70,9 +70,9 @@ sendBtn.addEventListener("click", () => {
 
     // Objeto que define os endpoints e os elementos da tela
     const apiEndpoints = {
-        "Groq (Llama 4)": "http://127.0.0.1:5000/chat/groq",
-        "Google (Gemini-1.5-flash)": "http://127.0.0.1:5000/chat/gemini",
-        "OpenAI (GPT-3.5)": "http://127.0.0.1:5000/chat/openai"
+        "Groq (Llama 4)": "https://lucasgcheld.pythonanywhere.com/chat/groq",
+        "Google (Gemini-1.5-flash)": "https://lucasgcheld.pythonanywhere.com/chat/gemini",
+        "OpenAI (GPT-3.5)": "https://lucasgcheld.pythonanywhere.com/chat/openai"
     };
 
     // Itera sobre cada IA para criar o bloco de espera e disparar a requisição

@@ -1,122 +1,146 @@
-// --- ELEMENTOS DO DOM ---
-const userInput = document.getElementById("user-input");
-const sendBtn = document.getElementById("send-btn");
-const analyzeImplicitCheckbox = document.getElementById("analyze-implicit");
-const clearHistoryBtn = document.getElementById("clear-history-btn");
-const useQuestionsCheckbox = document.getElementById("use-questions");
-const questionsPanel = document.getElementById("questions-panel");
-const questionsContainer = document.getElementById("questions-container");
+document.addEventListener("DOMContentLoaded", () => {
+    // --- ELEMENTOS DO DOM ---
+    const userInput = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+    const analyzeImplicitCheckbox = document.getElementById("analyze-implicit");
+    const clearHistoryBtn = document.getElementById("clear-history-btn");
+    const useQuestionsCheckbox = document.getElementById("use-questions");
+    const questionsPanel = document.getElementById("questions-panel");
+    const questionsContainer = document.getElementById("questions-container");
 
-// Novos elementos para o layout de resultados comparativos
-const userPromptDisplay = document.getElementById('user-prompt-display');
-const llmResultsContainer = document.getElementById('llm-results-container');
+    // Novos elementos para o layout de resultados comparativos
+    const userPromptDisplay = document.getElementById('user-prompt-display');
+    const llmResultsContainer = document.getElementById('llm-results-container');
 
 
-// --- FUNÇÃO PARA GERAR O FORMULÁRIO (sem alterações) ---
-function generateQuestionForm() {
-    let formHTML = "";
-    questions.forEach((category) => {
-        formHTML += `<div class="question-category">${category.category}</div>`;
-        category.questions.forEach((question, index) => {
-            formHTML += `
-                <div class="form-group question-item">
-                    <label for="question-${category.category}-${index}">${question}</label>
-                    <textarea class="form-control" id="question-${category.category}-${index}" rows="2"></textarea>
-                </div>
-            `;
+    // --- FUNÇÃO PARA GERAR O FORMULÁRIO ---
+    function generateQuestionForm() {
+        let formHTML = "";
+        questions.forEach((category) => {
+            formHTML += `<div class="question-category">${category.category}</div>`;
+            category.questions.forEach((question, index) => {
+                formHTML += `
+                    <div class="form-group question-item">
+                        <label for="question-${category.category}-${index}">${question}</label>
+                        <textarea class="form-control" id="question-${category.category}-${index}" rows="2"></textarea>
+                    </div>
+                `;
+            });
         });
+        questionsContainer.innerHTML = formHTML;
+    }
+
+    // --- EVENT LISTENERS (LÓGICA PRINCIPAL) ---
+
+    // 1. Controla a visibilidade da coluna de perguntas
+    useQuestionsCheckbox.addEventListener("change", () => {
+        if (useQuestionsCheckbox.checked) {
+            questionsPanel.style.display = "flex";
+        } else {
+            questionsPanel.style.display = "none";
+        }
     });
-    questionsContainer.innerHTML = formHTML;
-}
 
-// --- EVENT LISTENERS (LÓGICA PRINCIPAL) ---
-
-// 1. Controla a visibilidade da coluna de perguntas (sem alterações)
-useQuestionsCheckbox.addEventListener("change", () => {
-    if (useQuestionsCheckbox.checked) {
-        questionsPanel.style.display = "flex";
-    } else {
-        questionsPanel.style.display = "none";
-    }
-});
-
-// 2. Envia os dados para as IAs (LÓGICA ATUALIZADA E SIMULTÂNEA)
-sendBtn.addEventListener("click", () => {
-    const userText = userInput.value;
-    if (!userText) {
-        alert("Por favor, preencha a descrição da funcionalidade.");
-        return;
-    }
-    
-    // Mostra a pergunta do usuário no topo
-    userPromptDisplay.textContent = userText;
-    userPromptDisplay.style.display = 'block';
-    llmResultsContainer.innerHTML = ''; // Limpa resultados antigos
-
-    const analyzeImplicit = analyzeImplicitCheckbox.checked;
-    const useQuestions = useQuestionsCheckbox.checked;
-
-    let extraContext = "";
-    if (useQuestions) {
-        // ... (seu código para montar o extraContext, sem alterações) ...
-    }
-
-    // Corpo da requisição que será enviado para todas as IAs
-    const requestBody = {
-        message: userText,
-        analyze_implicit: analyzeImplicit,
-        extra_context: extraContext
-    };
-
-    // Objeto que define os endpoints e os elementos da tela
-    const apiEndpoints = {
-        "Groq (Llama 4)": "https://lucasgcheld.pythonanywhere.com/chat/groq",
-        "Google (Gemini-1.5-flash)": "https://lucasgcheld.pythonanywhere.com/chat/gemini",
-        "OpenAI (GPT-3.5)": "https://lucasgcheld.pythonanywhere.com/chat/openai"
-    };
-
-    // Itera sobre cada IA para criar o bloco de espera e disparar a requisição
-    for (const [modelName, endpoint] of Object.entries(apiEndpoints)) {
+    // 2. Envia os dados para o back-end com a nova lógica
+    sendBtn.addEventListener("click", () => {
+        const userText = userInput.value;
+        if (!userText) {
+            alert("Por favor, preencha a descrição da funcionalidade.");
+            return;
+        }
         
-        // --- 1. Cria os blocos com a mensagem de "Processando..." ---
-        const block = document.createElement('div');
-        block.className = 'response-block';
-        block.id = `block-${modelName.replace(/[\s()]/g, '')}`; // Cria um ID único, ex: block-GroqLlama3
+        // Mostra a pergunta do usuário no topo e limpa a área
+        userPromptDisplay.textContent = userText;
+        userPromptDisplay.style.display = 'block';
+        llmResultsContainer.innerHTML = '<div class="text-muted p-3">Disparando requisições para as 3 IAs... O processo pode levar alguns segundos.</div>';
 
-        const title = document.createElement('h6');
-        title.textContent = modelName;
+        const analyzeImplicit = analyzeImplicitCheckbox.checked;
+        const useQuestions = useQuestionsCheckbox.checked;
 
-        const content = document.createElement('div');
-        content.className = 'llm-message';
-        content.innerHTML = `Processando a requisição... Você pode acompanhar o status no console do back-end.`;
+        let extraContext = "";
+        if (useQuestions) {
+            questions.forEach((category) => {
+                category.questions.forEach((question, index) => {
+                    const answerInput = document.getElementById(`question-${category.category}-${index}`);
+                    if (answerInput && answerInput.value) {
+                        extraContext += `- ${question}\n  Resposta: ${answerInput.value}\n\n`;
+                    }
+                });
+            });
+        }
 
-        block.appendChild(title);
-        block.appendChild(content);
-        llmResultsContainer.appendChild(block);
-
-        // --- 2. Dispara a requisição fetch para esta IA específica ---
-        fetch(endpoint, {
+        // Dispara a ÚNICA requisição para a rota principal do back-end
+        fetch("https://lucasgcheld.pythonanywhere.com/chat", {
             method: "POST",
-            body: JSON.stringify(requestBody),
+            body: JSON.stringify({
+                message: userText,
+                analyze_implicit: analyzeImplicit,
+                extra_context: extraContext
+            }),
             headers: { "Content-Type": "application/json" },
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro de servidor: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
-            // Atualiza o conteúdo do bloco desta IA com a resposta real
-            content.innerHTML = marked.parse(data.response || "Erro ou nenhuma resposta recebida.");
+            llmResultsContainer.innerHTML = ''; // Limpa a mensagem de "carregando"
+
+            // Nomes "bonitos" para exibir nos títulos
+            const modelNames = {
+                "groq_response": "Groq (Llama 3)",
+                "gemini_response": "Google (Gemini)",
+                "openai_response": "OpenAI (GPT-3.5)"
+            };
+
+            // Itera sobre o "relatório" recebido do back-end
+            for (const [modelKey, result] of Object.entries(data)) {
+                // Cria o 'bloco' principal
+                const block = document.createElement('div');
+                block.className = 'response-block';
+                if (result.status === 'error') {
+                    block.style.borderColor = '#dc3545'; // Borda vermelha se deu erro
+                }
+
+                // Cria o título (h6)
+                const title = document.createElement('h6');
+                title.textContent = modelNames[modelKey] || modelKey;
+
+                // Cria o conteúdo com a resposta da IA
+                const content = document.createElement('div');
+                content.className = 'llm-message';
+                content.innerHTML = marked.parse(result.response || "Resposta vazia.");
+
+                // Cria o rodapé com o tempo e o status
+                const statusFooter = document.createElement('div');
+                statusFooter.className = 'response-status';
+                statusFooter.textContent = `Tempo: ${result.time_taken}s`;
+                if (result.status === 'error') {
+                    statusFooter.classList.add('error');
+                    statusFooter.textContent = `Falhou em ${result.time_taken}s`;
+                }
+                
+                // Monta o bloco completo e o adiciona na tela
+                block.appendChild(title);
+                block.appendChild(content);
+                block.appendChild(statusFooter);
+                llmResultsContainer.appendChild(block);
+            }
         })
         .catch(error => {
-            content.innerHTML = `<span style="color: red;">Ocorreu um erro ao chamar ${modelName}.</span>`;
-            console.error(`Erro na requisição para ${modelName}:`, error);
+            llmResultsContainer.innerHTML = `<div class="llm-message" style="background-color: #f8d7da; color: #721c24;">Ocorreu um erro geral. Verifique o console.</div>`;
+            console.error("Erro na requisição:", error);
         });
-    }
-});
+    });
 
-// 3. Limpa a tela de resultados (LÓGICA ATUALIZADA)
-clearHistoryBtn.addEventListener("click", () => {
-    userPromptDisplay.style.display = 'none'; // Esconde a pergunta do usuário
-    llmResultsContainer.innerHTML = ''; // Limpa os blocos de resultado
-});
+    // 3. Limpa a tela de resultados
+    clearHistoryBtn.addEventListener("click", () => {
+        userPromptDisplay.style.display = 'none';
+        llmResultsContainer.innerHTML = '';
+    });
 
-// --- INICIALIZAÇÃO ---
-generateQuestionForm();
+    // --- INICIALIZAÇÃO ---
+    generateQuestionForm();
+});

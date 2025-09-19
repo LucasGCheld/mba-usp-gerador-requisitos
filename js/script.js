@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const questionGroupsContainer = document.getElementById('question-groups-container');
 
     const apiEndpoints = {
-        "Groq (Llama 3)": "https://lucasgcheld.pythonanywhere.com/chat/groq",
+        "Groq (Llama 4)": "https://lucasgcheld.pythonanywhere.com/chat/groq",
         "Google (Gemini 1.5)": "https://lucasgcheld.pythonanywhere.com/chat/gemini",
         "Mistral (Mistral Small)": "https://lucasgcheld.pythonanywhere.com/chat/mistral"
     };
@@ -212,3 +212,4 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- INICIALIZAÇÃO ---
     loadAllStates();
 });
+

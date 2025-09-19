@@ -163,3 +163,17 @@ html, body {
 .response-status.error {
     color: #dc3545; /* Vermelho para erros */
 }
+/* Estilos para as novas seções de configuração */
+#ia-selection-container .form-check {
+    margin-right: 15px;
+}
+
+/* Estilos para os grupos de perguntas */
+#question-groups-container .form-check {
+    margin-right: 15px;
+    margin-bottom: 5px;
+}
+
+.question-group {
+    display: none; /* Escondido por padrão */
+}

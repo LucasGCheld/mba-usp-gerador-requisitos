@@ -15,8 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const questionGroupsContainer = document.getElementById('question-groups-container');
 
     const apiEndpoints = {
-        "Groq (Llama 4)": "https://lucasgcheld.pythonanywhere.com/chat/groq",
-        "Google (Gemini 1.5 Flash)": "https://lucasgcheld.pythonanywhere.com/chat/gemini",
+        "Groq (Llama 3)": "https://lucasgcheld.pythonanywhere.com/chat/groq",
+        "Google (Gemini 1.5)": "https://lucasgcheld.pythonanywhere.com/chat/gemini",
         "Mistral (Mistral Small)": "https://lucasgcheld.pythonanywhere.com/chat/mistral"
     };
 
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     formHTML += `
                         <div class="form-group question-item">
                             <label for="${questionId}">${question}</label>
-                            <textarea class="form-control question-textarea" id="${questionId}" rows="2" placeholder="Ex: Admins, clientes, visitantes...">${savedAnswer}</textarea>
+                            <textarea class="form-control question-textarea" id="${questionId}" rows="2" placeholder="Descreva detalhes aqui...">${savedAnswer}</textarea>
                         </div>
                     `;
                 });
@@ -106,7 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- EVENT LISTENERS ---
 
-    // Salvar estado de qualquer checkbox ou campo de texto ao ser alterado
     document.body.addEventListener('change', (e) => {
         if (e.target.matches('.ia-checkbox')) {
             const selected = Array.from(document.querySelectorAll('.ia-checkbox:checked')).map(cb => cb.value);
@@ -129,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.target.matches('.question-textarea')) saveState(e.target.id, e.target.value);
     });
     
-    // Botão Principal de Gerar
     sendBtn.addEventListener("click", () => {
         const userText = userInput.value;
         if (!userText) {
@@ -143,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
         
-        userPromptDisplay.textContent = userText;
+        userPromptDisplay.textContent = `Você descreveu: "${userText}"`;
         userPromptDisplay.style.display = 'block';
         llmResultsContainer.innerHTML = '';
 
@@ -175,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const content = document.createElement('div');
             content.className = 'llm-message';
-            content.innerHTML = `Processando...`;
+            content.innerHTML = `<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div> Processando...`;
 
             block.appendChild(title);
             block.appendChild(content);
@@ -197,7 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Botões de Limpeza
     clearHistoryBtn.addEventListener("click", () => {
         userInput.value = '';
         userPromptDisplay.style.display = 'none';
@@ -205,25 +202,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     resetOptionsBtn.addEventListener("click", () => {
-        // Popup de confirmação
         const isConfirmed = confirm("Você tem certeza que deseja resetar todas as opções? Isso limpará a 'Instrução Padrão' e todas as respostas das perguntas detalhadas.");
         if (isConfirmed) {
-            localStorage.removeItem('selectedIAs');
-            localStorage.removeItem('persona');
-            localStorage.removeItem('analyzeImplicit');
-            localStorage.removeItem('useQuestions');
-            localStorage.removeItem('selectedGroups');
-            
-            // Limpa todas as respostas de perguntas salvas
-            questions.forEach(group => {
-                group.categories.forEach(cat => {
-                    cat.questions.forEach((q, index) => {
-                        localStorage.removeItem(`question-${group.groupName}-${cat.category}-${index}`);
-                    });
-                });
-            });
-            
-            location.reload(); // Recarrega a página para aplicar o estado padrão
+            localStorage.clear(); // Limpa TUDO
+            location.reload(); 
         }
     });
 

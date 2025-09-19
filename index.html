@@ -1,48 +1,69 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat de Análise de Requisitos</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css"> </head>
 <body>
-    <div id="main-container">
-        <div id="control-panel" class="panel">
-            <h5 class="mb-3">Descreva a Funcionalidade</h5>
-            <div class="form-group">
-                <textarea class="form-control" id="user-input" rows="6" placeholder="Ex: Preciso de uma tela de login com e-mail e senha..."></textarea>
-            </div>
-            <div class="form-check mb-2">
-                <input type="checkbox" class="form-check-input" id="analyze-implicit" checked>
-                <label class="form-check-label" for="analyze-implicit">Analisar requisitos implícitos</label>
-            </div>
-            <div class="form-check mb-3">
-                <input type="checkbox" class="form-check-input" id="use-questions">
-                <label class="form-check-label" for="use-questions">Guiar com perguntas detalhadas?</label>
-            </div>
-            <div class="mt-auto">
-                <button class="btn btn-primary w-100" id="send-btn">Gerar Requisitos</button>
-            </div>
-        </div>
-        <div id="questions-panel" class="panel">
-            <h5 class="mb-3">Forneça Contexto (Opcional)</h5>
-            <div id="questions-container"></div>
-        </div>
-        <div id="results-panel" class="panel">
-            <h5 class="mb-3">Resultado da Análise Comparativa</h5>
-            <div id="user-prompt-display" class="user-message mb-3" style="display: none;"></div>
-            <div id="llm-results-container">
+    <div class="container-fluid">
+        <div class="row">
+            <main class="col-md-8" id="main-content">
+                <header class="text-center my-4">
+                    <h4>Gerador de Requisitos com IA</h4>
+                    <p class="text-muted">Descreva uma funcionalidade e compare a geração de requisitos por diferentes IAs.</p>
+                </header>
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>1. Selecione as IAs</h6>
+                                <div id="ia-selection-container" class="d-flex flex-wrap">
+                                    </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>2. Instrução Padrão (Opcional)</h6>
+                                <textarea id="persona-input" class="form-control" rows="2" placeholder="Ex: Aja como um Arquiteto de Software. Detalhe os requisitos não funcionais..."></textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            <div class="mt-auto">
-                <button class="btn btn-danger w-100" id="clear-history-btn">Limpar Resultados</button>
-            </div>
+                
+                <h6>3. Descreva a Funcionalidade</h6>
+                <div class="chat-input-area">
+                    <textarea id="user-input" class="form-control" rows="5" placeholder="Ex: Uma tela de login com e-mail, senha e um link para 'esqueci minha senha'..."></textarea>
+                    <div class="chat-options">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="analyze-implicit" checked>
+                            <label class="form-check-label" for="analyze-implicit">Analisar Requisitos Implícitos</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="use-questions">
+                            <label class="form-check-label" for="use-questions">Usar Perguntas Detalhadas</label>
+                        </div>
+                    </div>
+                    <div class="chat-buttons">
+                        <button id="clear-history-btn" class="btn btn-secondary">Limpar Chat</button>
+                        <button id="send-btn" class="btn btn-primary">Gerar Requisitos</button>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div id="results-area" class="mt-4">
+                    <div id="user-prompt-display" class="alert alert-secondary" style="display: none;"></div>
+                    <div id="llm-results-container" class="d-flex flex-wrap"></div>
+                </div>
+            </main>
+
+            <aside class="col-md-4" id="questions-panel" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5>Perguntas Detalhadas</h5>
+                    <button id="reset-options-btn" class="btn btn-sm btn-outline-danger">Resetar Opções</button>
+                </div>
+                <hr>
+                <div id="question-groups-container" class="mb-3">
+                    </div>
+                <div id="questions-container"></div>
+            </aside>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="js/questions.js"></script> <script src="js/script.js"></script>    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/questions.js"></script>
+    <script src="js/script.js"></script>
 </body>
-</html>
